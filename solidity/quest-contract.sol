@@ -49,7 +49,7 @@ contract QuestContract is Owned {
     }
 
     function getTotalActiveQuests() public view returns(uint) {
-        return totalQuests - makerToQuestCount[0];
+        return totalQuests - makerToQuestCount[address(0)];
     }
 
     function makerOf(uint _questId) public view returns (address) {
@@ -159,11 +159,11 @@ contract QuestContract is Owned {
     function removeTakerFromQuest(address _taker, uint _questId) private {
         assert(questToTaker[_questId] == _taker);
 
-        questToTaker[_questId] = 0;
+        questToTaker[_questId] = address(0);
         takerToQuestCount[_taker] = takerToQuestCount[_taker].sub(1);
-        takerToQuestCount[0] = takerToQuestCount[0].add(1);
+        takerToQuestCount[address(0)] = takerToQuestCount[address(0)].add(1);
 
-        if (questToMaker[_questId] != 0) {
+        if (questToMaker[_questId] != address(0)) {
             emit QuestReleased(_taker, _questId);
         }
     }
@@ -171,9 +171,9 @@ contract QuestContract is Owned {
     function removeMakerFromQuest(address _maker, uint _questId) private {
         assert(questToMaker[_questId] == _maker);
 
-        questToMaker[_questId] = 0;
+        questToMaker[_questId] = address(0);
         makerToQuestCount[_maker] = makerToQuestCount[_maker].sub(1);
-        makerToQuestCount[0] = makerToQuestCount[0].add(1);
+        makerToQuestCount[address(0)] = makerToQuestCount[address(0)].add(1);
 
         emit QuestRemoved(_maker, _questId);
     }
@@ -181,7 +181,7 @@ contract QuestContract is Owned {
     function recoverFailedQuest(uint _questId) public {
         require(questToMaker[_questId] == msg.sender);
         address taker = questToTaker[_questId];
-        require(taker != 0);
+        require(taker != address(0));
         require(isQuestFailed(_questId));
 
         QuestData storage quest = quests[_questId];
