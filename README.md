@@ -2,6 +2,8 @@
 
 Note: This code is a work in progress and not in production yet
 
+Beta (Rinkeby) Website: https://quests.decgaming.io
+
 ------
 quest-contract.sol
 
